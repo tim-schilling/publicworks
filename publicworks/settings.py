@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'project.apps.ProjectConfig',
 ]
 
@@ -80,11 +81,11 @@ DATABASES = {
 }
 
 EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
-EMAIL_HOST = os.environ('EMAIL_HOST', 'localhost')
-EMAIL_HOST_USER = os.environ('EMAIL_HOST_USER', 'dummy@test.com')
-EMAIL_HOST_PASSWORD = os.environ('EMAIL_HOST_PASSWORD', '')
-EMAIL_PORT = os.environ('EMAIL_PORT', 25)
-EMAIL_USE_TLS = os.environ('EMAIL_USE_TLS', False)
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'dummy@test.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_PORT = os.environ.get('EMAIL_PORT', 25)
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', False)
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

@@ -80,11 +80,11 @@ class Division(PublicWorksAttributeMixin):
 
 
 class Facility(PublicWorksAttributeMixin):
-    address = models.ForeignKey(Address, null=True, blank=True)
+    address = models.ForeignKey(Address, null=True, blank=True, on_delete=models.CASCADE)
 
 
 class Location(PublicWorksAttributeMixin):
-    address = models.ForeignKey(Address, null=True, blank=True)
+    address = models.ForeignKey(Address, null=True, blank=True, on_delete=models.CASCADE)
 
 
 class WorkOrderStatus(PublicWorksAttributeMixin):
@@ -96,8 +96,8 @@ class ResourceType(PublicWorksAttributeMixin):
 
 
 class Resource(PublicWorksAttributeMixin):
-    type = models.ForeignKey(ResourceType)
-    default_unit_cost = models.DecimalField()
+    type = models.ForeignKey(ResourceType, related_name="resources", on_delete=models.CASCADE)
+    default_unit_cost = models.DecimalField(max_digits=12, decimal_places=4)
 
 
 class Asset(models.Model):
@@ -138,14 +138,14 @@ class WorkOrder(models.Model):
     department = models.ForeignKey(Department, related_name='work_orders', on_delete=models.CASCADE, null=True, blank=True)
     division = models.ForeignKey(Division, related_name='work_orders', on_delete=models.CASCADE, null=True, blank=True)
     priority = models.IntegerField(null=True, blank=True)
-    total_cost = models.DecimalField()
+    total_cost = models.DecimalField(max_digits=12, decimal_places=4)
     quantity = models.IntegerField()
-    labor_hours = models.DecimalField()
-    labor_cost = models.DecimalField()
-    equipment_cost = models.DecimalField()
-    material_cost = models.DecimalField()
-    contractor_cost = models.DecimalField()
-    misc_cost = models.DecimalField()
+    labor_hours = models.DecimalField(max_digits=12, decimal_places=4)
+    labor_cost = models.DecimalField(max_digits=12, decimal_places=4)
+    equipment_cost = models.DecimalField(max_digits=12, decimal_places=4)
+    material_cost = models.DecimalField(max_digits=12, decimal_places=4)
+    contractor_cost = models.DecimalField(max_digits=12, decimal_places=4)
+    misc_cost = models.DecimalField(max_digits=12, decimal_places=4)
     start = models.DateField(null=True, blank=True)
     end = models.DateField(null=True, blank=True)
     duration = models.IntegerField()
@@ -172,13 +172,13 @@ class WorkDetail(models.Model):
     task = models.ForeignKey(Task, related_name='work_details', on_delete=models.CASCADE, null=True, blank=True)
     resource = models.ForeignKey(Resource, related_name='work_details', on_delete=models.CASCADE, null=True, blank=True)
     resource_desc = models.CharField(max_length=256, blank=True)
-    unit_cost = models.DecimalField(null=True, blank=True)
-    units = models.DecimalField(null=True, blank=True)
-    total_cost = models.DecimalField(null=True, blank=True)
-    total_units = models.DecimalField(null=True, blank=True)
-    unit_cost_regular_time = models.DecimalField(null=True, blank=True)
-    unit_cost_overtime = models.DecimalField(null=True, blank=True)
-    overtime_unit_cost = models.DecimalField(null=True, blank=True)
-    grand_total_cost = models.DecimalField(null=True, blank=True)
+    unit_cost = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=4)
+    units = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=4)
+    total_cost = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=4)
+    total_units = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=4)
+    unit_cost_regular_time = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=4)
+    unit_cost_overtime = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=4)
+    overtime_unit_cost = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=4)
+    grand_total_cost = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=4)
     time_cost = models.ForeignKey(TimeCost, related_name='work_details', on_delete=models.CASCADE, null=True, blank=True)
     unit = models.ForeignKey(Unit, related_name='work_details', on_delete=models.CASCADE, null=True, blank=True)

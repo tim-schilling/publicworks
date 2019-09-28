@@ -19,8 +19,19 @@ ATTRIBUTES = [
     ('Unit of Measure', 'Unit of Measure Text'),
 ]
 
+
 def clean_attribute(dict_reader, code_field, text_field):
-    data_gen = zip(dict_reader.get())
+    results = {
+        code_field: [],
+        text_field: [],
+    }
+    try:
+        for row in dict_reader:
+            results[code_field].append(row[code_field])
+            results[text_field].append(row[text_field])
+    except KeyError:
+        return None
+    return results
 
 
 def clean_attributes(filepath):
