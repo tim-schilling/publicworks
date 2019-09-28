@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block end_js %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+<script>
+
+$(document).ready(function() {
+  function drawChart() {
+    $('#id_chart').replaceWith($.parseHTML("<canvas id=\"id_chart\" width=\"1000\" height=\"400\"></canvas>"))
+    var url = $('#analyze').data('target')
+    var data = {}
+    $('.filter-select').each(function() {
+      data[$(this).attr('name')] = $(this).val()
+    })
+    data['limit'] = $('#id_limit').val()
+    data['domain'] = $('#id_domain').val()
+    data['range'] = $('#id_range').val()
+    data['value'] = $('#id_value').val()
+    $.ajax({
+      url: url,
+      data: data,
+      method: 'GET',
+      dataType: 'json',
+      success: function (response) {
+        var ctx = document.getElementById('id_chart').getContext('2d');
+        var chart = new Chart(ctx, {
+          type: 'bar',
+            data: response.chart.data,
+            options: {
+              color: [
+                'red',    // color for data at index 0
+                'blue',   // color for data at index 1
+                'green',  // color for data at index 2
+                'black',  // color for data at index 3
+              ],
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero: true
+                      }
+                  }]
+              }
+            }
+          });
+      }
+    })
+  }
+  $('#analyze').on('click', function () {
+    drawChart()
+  })
+})
+
+</script>
+{% endblock %}
+
+{% block content  %}
+  <div class="row">
+
+    <div class="col">
+      <button id="analyze" type="button" class="btn btn-primary float-right" data-target="{% url "project:chart_data" %}">Analyze!</button>
+      <form class="form-inline">
+
+      <label class="my-1 mr-2" for="id_department">Category</label>
+      <select class="filter-select my-1 mr-sm-2" name="category" id="id_category">
+        <option value="" selected>All</option>
+        {% for cat in categories %}
+          <option value="{{ cat.code }}">{{ cat.text }}</option>
+        {% endfor %}
+      </select>
+
+      <label class="my-1 mr-2" for="id_department">Department</label>
+      <select class="filter-select my-1 mr-sm-2" name="department" id="id_department">
+        <option value="" selected>All</option>
+        {% for department in departments %}
+          <option value="{{ department.code }}">{{ department.text }}</option>
+        {% endfor %}
+      </select>
+
+      <label class="my-1 mr-2" for="id_department">Division</label>
+      <select class="filter-select my-1 mr-sm-2" name="division" id="id_department">
+        <option value="" selected>All</option>
+        {% for division in divisions %}
+          <option value="{{ division.code }}">{{ division.text }}</option>
+        {% endfor %}
+      </select>
+
+      </form>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <label class="my-1 mr-2" for="id_department">Domain</label>
+      <select class=" my-1 mr-sm-2" name="domain" id="id_domain">
+        <option value="category__text">Category</option>
+        <option value="cause__text">Cause</option>
+        <option value="assigned_crew__text">Crew</option>
+        <option value="department__text">Department</option>
+        <option value="division__text">Division</option>
+        <option value="problem__text">Problem</option>
+        <option value="task__text" selected="selected">Task</option>
+      </select>
+
+      <label class="my-1 mr-2" for="id_department">Limit to</label>
+      <select class="my-1 mr-sm-2" name="limit" id="id_limit">
+        <option value="10" selected>10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+      </select>
+
+      <label class="my-1 mr-2" for="id_range">Range</label>
+      <select class="my-1 mr-sm-2" name="range" id="id_range">
+        <option value="labor_hours">Labor Hours</option>
+        <option value="total_cost" selected>Total Cost</option>
+      </select>
+
+      <label class="my-1 mr-2" for="id_value">Value</label>
+      <select class="my-1 mr-sm-2" name="value" id="id_value">
+        <option value="avg">Average</option>
+        <option value="median">Median</option>
+        <option value="stddev">Std Dev</option>
+        <option value="sum" selected>Sum</option>
+      </select>
+    </div>
+  </div>
+  <div class="row">
+  <div class="col">
+    <canvas id="id_chart" width="1000" height="400"></canvas>
+  </div>
+  </div>
+{% endblock %}
